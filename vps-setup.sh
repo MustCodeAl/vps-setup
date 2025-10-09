@@ -51,6 +51,8 @@ update_apt() {
     echo -e "${GREEN} Updating apt-get repository and upgrading the system...${RESET}"
     apt-get update -qq
     apt-get upgrade -qq
+    echo -e "${GREEN}Installing essential packages for repository management...${RESET}"
+    apt-get install -y apt-transport-https ca-certificates software-properties-common -qq
 }
 
 setup_firewall() {
@@ -97,6 +99,11 @@ setup_logwatch() {
 install_utils() {
   echo -e "${GREEN}Installing util tools: htop, vim, git, build-essential, devscripts, iproute2...${RESET}"
   apt-get install htop vim git build-essential devscripts iproute2 -qq
+  
+  if [ "$OS" = "ubuntu" ]; then
+    echo -e "${GREEN}Installing ubuntu-standard and util-linux packages...${RESET}"
+    apt-get install ubuntu-standard util-linux -qq
+  fi
 }
 
 add_sysadmin_user() {
@@ -122,7 +129,7 @@ install_docker() {
   # https://docs.docker.com/engine/install/debian/#install-using-the-repository
   # https://docs.docker.com/engine/install/ubuntu/#install-using-the-repository
   apt-get update -qq
-  apt-get install ca-certificates curl -qq
+  apt-get install curl -qq
   install -m 0755 -d /etc/apt/keyrings
   
   if [ "$OS" = "debian" ]; then
